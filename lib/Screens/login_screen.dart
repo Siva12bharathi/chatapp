@@ -23,11 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     setState(() => isLoading = false);
-
-    if (user != null) {
+    if (user != null && context.mounted) {
+      // ✅ Store user in Hive
+      await loginService.storeUserInHive(user);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => ProfileScreen(user: user)),
+        MaterialPageRoute(builder: (_) => ProfileScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mynotesapp/services/login_service.dart';
-
 import 'Screens/chat_screen.dart';
 import 'Screens/login_screen.dart';
 import 'Screens/profile_screen.dart';
+import 'models/user_model.dart';
+
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
+  await Hive.initFlutter();
+  Hive.registerAdapter(HiveUserAdapter());
+  await Hive.openBox<HiveUser>('userBox');
   runApp(const MyApp());
 }
 
@@ -68,7 +73,7 @@ class SplashWrapper extends StatelessWidget {
 
         // If user is logged in
         if (snapshot.hasData && snapshot.data != null) {
-          return  ProfileScreen(user: user!);
+          return  ProfileScreen();
         }
 
         // If user is NOT logged in
